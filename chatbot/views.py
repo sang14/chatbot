@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.utils.decorators import method_decorator
 import json
-
+import requests
 # Create your views here.
 VERIFY_TOKEN='7thSeptember2016'
 PAGE_ACCESS_TOKEN='EAAZAB0PBZCJQUBAJ0jm8JXArYazQPym6pwSc57gG3LNNNxbYOBYWycuXkpOylehg1XmNslgpLsMruMrsdQ5ZC9IP6oZB1MdZC8QKIr2TuYoEJYwAMA4GRFrXW7rubQHxUXImufZAASZBryKYlepQnxZBdW09xbKzZC5gKTeMvrFzlZCwZDZD'
