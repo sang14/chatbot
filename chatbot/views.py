@@ -11,9 +11,33 @@ VERIFY_TOKEN='7thseptember2016'
 
 PAGE_ACCESS_TOKEN='EAAZAB0PBZCJQUBAJ0jm8JXArYazQPym6pwSc57gG3LNNNxbYOBYWycuXkpOylehg1XmNslgpLsMruMrsdQ5ZC9IP6oZB1MdZC8QKIr2TuYoEJYwAMA4GRFrXW7rubQHxUXImufZAASZBryKYlepQnxZBdW09xbKzZC5gKTeMvrFzlZCwZDZD'
 
+def wikisearch(title='tomato'):
+    url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=%s'%(title)
+    resp = requests.get(url=url).text
+    data = json.loads(resp)
+    scoped_data = data['query']['pages']
+    print scoped_data
+    page_id = data['query']['pages'].keys()[0]
+    wiki_url = 'https://en.m.wikipedia.org/?curid=%s'%(page_id)
+    try:
+        wiki_content = scoped_data[page_id]['extract']
+        wiki_content = re.sub(r'[^\x00-\x7F]+',' ', wiki_content)
+        wiki_content = re.sub(r'\([^)]*\)', '', wiki_content)
+        
+        if len(wiki_content) > 315:
+            wiki_content = wiki_content[:315] + ' ...'
+    except KeyError:
+        wiki_content = ''
+
+    return wiki_content
+
+
+
 def post_facebook_message(fbid,message_text):
 	post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
-	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":message_text}})
+
+	output_text = wikisearch(message_text)
+	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
 	status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
 	print status.json()
 
@@ -46,4 +70,6 @@ class MyChatBotView(generic.View):
 		return HttpResponse() 
 
 def index(request):
-	return HttpResponse('hello')
+	t = request.GET['text'] or 'foo'
+
+	return HttpResponse(wikisearch(t))
