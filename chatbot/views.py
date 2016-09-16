@@ -70,6 +70,4 @@ class MyChatBotView(generic.View):
 		return HttpResponse() 
 
 def index(request):
-	t = request.GET['text'] or 'foo'
-
-	return HttpResponse(wikisearch(t))
+	return HttpResponse('Hello')
