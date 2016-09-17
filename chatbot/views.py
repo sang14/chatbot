@@ -51,7 +51,34 @@ def post_facebook_message(fbid,message_text):
 	#output_text = wikisearch(message_text)
 	output_text =chuck()
 	output_text=output_text.replace("Chuck Norris","Rajnikanth")
-	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
+	response_msg_with_button={
+	"recipient":{
+    "id":fbid
+  },
+  "message":{
+    "attachment":{
+      "type":"template",
+      "payload":{
+        "template_type":"button",
+        "text":output_text,
+        "buttons":[
+          {
+            "type":"web_url",
+            "url":"https://petersapparel.parseapp.com",
+            "title":"Show Website"
+          },
+          {
+            "type":"postback",
+            "title":"Start Chatting",
+            "payload":"USER_DEFINED_PAYLOAD"
+          }
+        ]
+      }
+    }
+  }
+}
+	response_msg = json.dumps(response_msg_with_button)
+	#response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
 	status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
 	print status.json()
 
