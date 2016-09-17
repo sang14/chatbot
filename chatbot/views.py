@@ -13,6 +13,8 @@ VERIFY_TOKEN='7thSeptember2016'
 PAGE_ACCESS_TOKEN='EAAZAB0PBZCJQUBAJ0jm8JXArYazQPym6pwSc57gG3LNNNxbYOBYWycuXkpOylehg1XmNslgpLsMruMrsdQ5ZC9IP6oZB1MdZC8QKIr2TuYoEJYwAMA4GRFrXW7rubQHxUXImufZAASZBryKYlepQnxZBdW09xbKzZC5gKTeMvrFzlZCwZDZD'
 
 def index(request):
+	post_facebook_message('1123','hi')
+	handle_postback('123224','hi')
 	output_text=chuck()
 	return HttpResponse(output_text)
 
