@@ -240,7 +240,10 @@ class MyChatBotView(generic.View):
                 #print message
                 try:
                     if 'quickreply' in message['message']:
-                        handle_quickreply(message['sender']['id'],message['message']['postback']['payload'])
+                        logg(message['message']['postback']['payload'],symbol='-QR-')
+                        handle_quickreply(message['sender']['id'],
+                            message['message']['postback']['payload'])
+
                     else:
                         pass
                 except Exception as e:
