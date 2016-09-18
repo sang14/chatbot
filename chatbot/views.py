@@ -15,14 +15,24 @@ PAGE_ACCESS_TOKEN='EAAZAB0PBZCJQUBAJ0jm8JXArYazQPym6pwSc57gG3LNNNxbYOBYWycuXkpOy
 def index(request):
 	post_facebook_message('1123','hi')
 	handle_postback('123224','hi')
-	output_text=chuck()
+	output_text=[0,0]
+	output_text[0]=chuck()
+	output_text[1]=chuck()
+	
 	return HttpResponse(output_text)
 
 def chuck():
 	url='https://api.chucknorris.io/jokes/random'
 	resp=requests.get(url=url).text
 	data=json.loads(resp)
-	return data['value'],data['url'],data['icon_url']
+	
+	val=data['value']
+	
+	url_info=data['url']
+	
+	icon=data['icon_url']
+	return val,url_info,icon
+	#return data['value'],data['url'],data['icon_url']
 
 
 def wikisearch(title='tomato'):
@@ -51,67 +61,75 @@ def post_facebook_message(fbid,message_text):
 	post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 
 	#output_text = wikisearch(message_text)
-	output_text,joke_link,output_image =chuck()
-	output_text=output_text.replace("Chuck Norris","Rajnikanth")
-	response_msg_generic={
-    "recipient":{
-        "id":fbid
-      },
-      "message":{
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":output_text,
-                "item_url":"https://petersfancybrownhats.com",
-                "image_url":output_image,
-                "subtitle":"We\'ve got the right hat for everyone.",
-                "buttons":[
-                  {
-                    "type":"web_url",
-                    "url":joke_link,
-                    "title":"View Website"
-                  },
-                  {
-                    "type":"postback",
-                    "title":"Another Joke",
-                    "payload":"RANDOM_JOKE"
-                  }              
-                ]
-              }
-            ]
-          }
-        }
-      }
-}
-	response_msg_with_button={
-	"recipient":{
-    "id":fbid
-  },
-  "message":{
-    "attachment":{
-      "type":"template",
-      "payload":{
-        "template_type":"button",
-        "text":output_text,
-        "buttons":[
-          {
-            "type":"web_url",
-            "url":joke_link,
-            "title":"Show Website"
-          },
-          {
-            "type":"postback",
-            "title":"Start Chatting",
-            "payload":"USER_DEFINED_PAYLOAD"
-          }
-        ]
-      }
-    }
-  }
-}
+	output_text=[0,0]
+	joke_link=[0,0]
+	output_image=[0,0]
+	output_text[0],joke_link[0],output_image[0] =chuck()
+	output_text[1],joke_link[1],output_image[1] =chuck()
+	#output_text=output_text.replace("Chuck Norris","Rajnikanth")
+	
+	for i in range(2) :
+	    	response_msg_generic={
+	        "recipient":{
+	            "id":fbid
+	          },
+	          "message":{
+	            "attachment":{
+	              "type":"template",
+	              "payload":{
+	                "template_type":"generic",
+	                "elements":[
+	                  {
+	                    "title":output_text[i],
+	                    "item_url":"https://petersfancybrownhats.com",
+	                    "image_url":output_image[i],
+	                    "subtitle":"he he =D",
+	                    "buttons":[
+	                      {
+	                        "type":"web_url",
+	                        "url":joke_link[i],
+	                        "title":"View Website"
+	                      },
+	                      {
+	                        "type":"postback",
+	                        "title":"Another Joke",
+	                        "payload":"RANDOM_JOKE"
+	                      }              
+	                    ]
+	                  }
+	                ]
+	              }
+	            }
+	          }
+	    }
+	    	response_msg_with_button={
+	    	"recipient":{
+	        "id":fbid
+	      },
+	      "message":{
+	        "attachment":{
+	          "type":"template",
+	          "payload":{
+	            "template_type":"button",
+	            "text":output_text[i],
+	            "buttons":[
+	              {
+	                "type":"web_url",
+	                "url":joke_link[i],
+	                "title":"Show Website"
+	              },
+	              {
+	                "type":"postback",
+	                "title":"Start Chatting",
+	                "payload":"USER_DEFINED_PAYLOAD"
+	              }
+	            ]
+	          }
+	        }
+	      }
+	    } 
+	        
+	
     
 	#response_msg = json.dumps(response_msg_with_button)
 	response_msg = json.dumps(response_msg_generic)
@@ -163,6 +181,7 @@ class MyChatBotView(generic.View):
 					sender_id = message['sender']['id']
 					message_text = message['message']['text']
 					post_facebook_message(sender_id,message_text) 
+					
 				except Exception as e:
 					logg(e,symbol='-168-')
 					pass
