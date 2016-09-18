@@ -206,6 +206,12 @@ def handle_postback(fbid,payload):
 def logg(message,symbol='-'):
     print '%s\n %s \n%s'%(symbol*10,message,symbol*10)
 
+def handle_qucikreply(fbid,payload):
+    post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
+    logg(payload,symbol='-QR-')
+    return
+
+
 class MyChatBotView(generic.View):
     def get(self,request,*args,**kwargs):
         if self.request.GET['hub.verify_token']==VERIFY_TOKEN:
@@ -232,6 +238,13 @@ class MyChatBotView(generic.View):
                 except Exception as e:
                     logg(e,symbol='-160-')
                 #print message
+                try:
+                    if 'quickreply' in message['message']:
+                        handle_quickreply(message['sender']['id'],message['message']['postback']['payload'])
+                    else:
+                        pass
+                except Exception as e:
+                    logg(e,symbol='-243-')
                 try:
                     sender_id = message['sender']['id']
                     message_text = message['message']['text']
