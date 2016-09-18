@@ -28,7 +28,7 @@ def quizGen():
     return dict(answer=answer,options=options)
 
 def index(request):
-    #post_facebook_message('1123','hi')
+    post_facebook_message('1123','hi')
     #handle_postback('123224','hi')
     #output_text=[0,0]
     #output_text[0]=chuck()
