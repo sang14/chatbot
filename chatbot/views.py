@@ -232,7 +232,7 @@ def handle_postback(fbid,payload):
 def logg(message,symbol='-'):
     print '%s\n %s \n%s'%(symbol*10,message,symbol*10)
 
-def handle_qucikreply(fbid,payload):
+def handle_quickreply(fbid,payload):
     if not payload:
         return
 
@@ -243,7 +243,7 @@ def handle_qucikreply(fbid,payload):
         logg("Correct Answer",symbol='-YES-')
         output_text='Correct Answer'
     else:
-        logg("Weong Answer",symbol='-YES-')
+        logg("Wrong Answer",symbol='-YES-')
         output_text='Wrong Answer'
 
     response_msg=json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
