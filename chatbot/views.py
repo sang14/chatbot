@@ -239,10 +239,10 @@ class MyChatBotView(generic.View):
                     logg(e,symbol='-160-')
                 #print message
                 try:
-                    if 'quickreply' in message['message']:
+                    if 'quick_reply' in message['message']:
                         logg(message['message']['postback']['payload'],symbol='-QR-')
                         handle_quickreply(message['sender']['id'],
-                            message['message']['postback']['payload'])
+                            message['message']['quick_reply']['payload'])
 
                     else:
                         pass
