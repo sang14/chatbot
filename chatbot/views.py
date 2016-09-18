@@ -85,6 +85,7 @@ def post_facebook_message(fbid,message_text):
     output_text[1],joke_link[1],output_image[1] =chuck()
     #output_text=output_text.replace("Chuck Norris","Rajnikanth")
     
+    quiz=quizGen()
     response_msg_generic={
         "recipient":{
             "id":fbid
@@ -162,7 +163,19 @@ def post_facebook_message(fbid,message_text):
         }
       }
     } 
-            
+    response_msg_image={
+    "recipient":{
+        "id":fbid
+      },
+      "message":{
+        "attachment":{
+          "type":"image",
+          "payload":{
+            "url":quiz['answer'][1]
+          }
+        }
+      }
+    }       
     response_msg_quickreply={
     "recipient":{
         "id":fbid
@@ -172,12 +185,22 @@ def post_facebook_message(fbid,message_text):
         "quick_replies":[
           {
             "content_type":"text",
-            "title":"Red",
+            "title":quiz['options'][0],
             "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
           },
           {
             "content_type":"text",
-            "title":"Green",
+            "title":quiz['options'][1],
+            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+          },
+          {
+            "content_type":"text",
+            "title":quiz['options'][2],
+            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+          },
+          {
+            "content_type":"text",
+            "title":quiz['options'][3],
             "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
           }
         ]
@@ -188,10 +211,13 @@ def post_facebook_message(fbid,message_text):
     #response_msg = json.dumps(response_msg_with_button)
     #response_msg = json.dumps(response_msg_generic)
     response_msg=json.dumps(response_msg_quickreply)
+    response_msg_image=json.dumps(response_msg_image)
     #response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
     #status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-    print status.json()
+    #status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+    #print status.json()
+    requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg_image)
+    requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
 
 def handle_postback(fbid,payload):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
@@ -240,7 +266,7 @@ class MyChatBotView(generic.View):
                 #print message
                 try:
                     if 'quick_reply' in message['message']:
-                        logg(message['message']['postback']['payload'],symbol='-QR-')
+                        logg(message['message']['quick_reply']['payload'],symbol='-QR-')
                         handle_quickreply(message['sender']['id'],
                             message['message']['quick_reply']['payload'])
 
