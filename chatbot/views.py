@@ -238,12 +238,13 @@ def handle_quickreply(fbid,payload):
 
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     logg(payload,symbol='-QR-')
+    a,b=payload.split(':')
 
-    if payload.split(':')[0]==payload.split(':')[:-1]:
+    if a==b:
         logg("Correct Answer",symbol='-YES-')
         output_text='Correct Answer'
     else:
-        logg("Wrong Answer",symbol='-YES-')
+        logg("Wrong Answer",symbol='-NO-')
         output_text='Wrong Answer'
 
     response_msg=json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
