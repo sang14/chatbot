@@ -84,7 +84,7 @@ def post_facebook_message(fbid,message_text):
     output_text[0],joke_link[0],output_image[0] =chuck()
     output_text[1],joke_link[1],output_image[1] =chuck()
     #output_text=output_text.replace("Chuck Norris","Rajnikanth")
-    output_text=
+    
     response_msg_generic={
         "recipient":{
             "id":fbid
