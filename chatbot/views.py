@@ -186,22 +186,22 @@ def post_facebook_message(fbid,message_text):
           {
             "content_type":"text",
             "title":quiz['options'][0],
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+            "payload":"%s:%s"%(quiz['options'][0],quiz['answer'][0])
           },
           {
             "content_type":"text",
             "title":quiz['options'][1],
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+            "payload":"%s:%s"%(quiz['options'][1],quiz['answer'][0])
           },
           {
             "content_type":"text",
             "title":quiz['options'][2],
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+            "payload":"%s:%s"%(quiz['options'][2],quiz['answer'][0])
           },
           {
             "content_type":"text",
             "title":quiz['options'][3],
-            "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+            "payload":"%s:%s"%(quiz['options'][3],quiz['answer'][0])
           }
         ]
       }
@@ -233,8 +233,22 @@ def logg(message,symbol='-'):
     print '%s\n %s \n%s'%(symbol*10,message,symbol*10)
 
 def handle_qucikreply(fbid,payload):
+    if not payload:
+        return
+
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
     logg(payload,symbol='-QR-')
+
+    if payload.split(':')[0]==payload.split(':')[:-1]:
+        logg("Correct Answer",symbol='-YES-')
+        output_text='Correct Answer'
+    else:
+        logg("Weong Answer",symbol='-YES-')
+        output_text='Wrong Answer'
+
+    response_msg=json.dumps({"recipient":{"id":fbid}, "message":{"text":output_text}})
+    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+
     return
 
 
@@ -269,6 +283,7 @@ class MyChatBotView(generic.View):
                         logg(message['message']['quick_reply']['payload'],symbol='-QR-')
                         handle_quickreply(message['sender']['id'],
                             message['message']['quick_reply']['payload'])
+                        return HttpResponse()
 
                     else:
                         pass
